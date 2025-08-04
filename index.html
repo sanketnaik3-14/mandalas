@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mandala Prototype</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body class="dark-mode">
+  <div class="container">
+    <button id="theme-toggle">Toggle Theme</button>
+    <h1>Mandala Visualizer</h1>
+    <div id="mandala-canvas"></div>
+    <button id="generate-button">Generate New</button>
+    <div class="info-display">
+      <p><strong>UUID:</strong> <code id="uuid-display"></code></p>
+      <p><strong>Hash:</strong> <code id="hash-display"></code></p>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

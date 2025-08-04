@@ -1,0 +1,78 @@
+/* Default Light Mode */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f0f0f0;
+  color: #121212;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.dark-mode .info-display code {
+  background-color: #2a2a2a;
+  color: #bbb;
+}
+
+.container {
+  text-align: center;
+}
+
+#mandala-canvas {
+  width: 500px;
+  height: 500px;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+body.dark-mode #mandala-canvas {
+  border-color: #333;
+}
+
+#generate-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #8A2BE2;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.info-display {
+  font-size: 14px;
+}
+
+.info-display code {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #e0e0e0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+body.dark-mode #theme-toggle {
+  border-color: #444;
+}
