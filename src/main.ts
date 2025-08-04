@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedPalette = palettes[prng.nextInt(0, palettes.length - 1)];
     const isDarkMode = document.body.classList.contains('dark-mode');
     const contrastColor = isDarkMode ? '#FFFFFF' : '#000000';
-    const strokeColor = isDarkMode ? '#CCCCCC' : '#333333';
+    const strokeColor = isDarkMode ? '#ffffff' : '#000000';
     const STROKE_WIDTH = 1;
 
     const center = { x: two.width / 2, y: two.height / 2 };
