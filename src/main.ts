@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let layers: number;
     let symmetry: number;
-    const minLayers = 7, maxLayers = 12;
-    const minSymmetry = 15, maxSymmetry = 80;
+    const minLayers = 7, maxLayers = 18;
+    const minSymmetry = 20, maxSymmetry = 80;
 
     if (prng.nextFloat() < 0.5) {
       layers = prng.nextInt(minLayers, maxLayers);

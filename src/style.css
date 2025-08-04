@@ -1,7 +1,7 @@
 /* Default Light Mode */
 body {
   font-family: system-ui, -apple-system, sans-serif;
-  background-color: #ffffff;
+  background-color: #FAF9F6;
   color: #1a1a1a;
   display: grid;
   place-items: center;
@@ -12,7 +12,7 @@ body {
 
 /* Dark Mode Styles */
 body.dark-mode {
-  background-color: #000000;
+  background-color: #0B132B;
   color: #e0e0e0;
 }
 
@@ -34,16 +34,16 @@ body.dark-mode .info-display code {
   display: grid;
   place-items: center;
 
-  background-color: #ffffff;
+  background-color: #1C1C1E;
   /* A soft, light beige for Light Mode */
-  border: 2px solid #333;
+  border: 2px solid #FFFFFF;
   transition: background-color 0.3s;
 }
 
 body.dark-mode #mandala-canvas {
-  background-color: #000000;
+  background-color: #F7F7F7;
   /* A slightly softer black for Dark Mode */
-  border: px solid #DCDCDC;
+  border: 1px solid #000000;
   /* --- END NEW --- */
 }
 
