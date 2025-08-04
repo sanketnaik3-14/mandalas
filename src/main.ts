@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedPalette = palettes[prng.nextInt(0, palettes.length - 1)];
     const isDarkMode = document.body.classList.contains('dark-mode');
     const contrastColor = isDarkMode ? '#FFFFFF' : '#000000';
+    const strokeColor = isDarkMode ? '#CCCCCC' : '#333333';
+    const STROKE_WIDTH = 1;
 
     const center = { x: two.width / 2, y: two.height / 2 };
     const maxRadius = two.width / 2 * 0.9;
@@ -139,13 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const startAngle = angle - (Math.PI / symmetry) * 0.8;
             const endAngle = angle + (Math.PI / symmetry) * 0.8;
             shape = two.makeArcSegment(center.x, center.y, archInnerR, layerRadius, startAngle, endAngle);
+            two.add(shape);
             break;
 
           case 2: // Woven Ring
             if (j === 0) {
               const outerVertices = [], innerVertices = [];
               const weaveCount = symmetry * 3, weaveAmplitude = layerWidth * 0.25;
-              const baseRingRadius = innerRadius + (layerWidth / 2);
+              // THE FIX: Ensure baseRingRadius is never zero
+              const baseRingRadius = Math.max(1, innerRadius + (layerWidth / 2));
               const weaveFrequency = Math.max(3, Math.floor(symmetry / 2));
               for (let k = 0; k <= weaveCount; k++) {
                 const weaveAngle = (k / weaveCount) * (Math.PI * 2);
@@ -167,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const x4 = center.x + Math.cos(angle + angleStepLattice) * innerRadius, y4 = center.y + Math.sin(angle + angleStepLattice) * innerRadius;
             const line2 = two.makeLine(x3, y3, x4, y4);
             shape = two.makeGroup(line1, line2);
+            two.add(shape);
             break;
 
           case 4: // Boundary Ring
@@ -174,27 +179,32 @@ document.addEventListener('DOMContentLoaded', () => {
               const inner = two.makeCircle(center.x, center.y, innerRadius);
               const outer = two.makeCircle(center.x, center.y, layerRadius);
               shape = two.makeGroup(inner, outer);
+              two.add(shape);
             }
             break;
 
           case 5: // Solid/Separator Ring
             if (j === 0) {
               shape = two.makeCircle(center.x, center.y, innerRadius + layerWidth / 2);
+              two.add(shape);
             }
             break;
 
           case 6: // Negative Space
+
             break;
 
           case 7: // Scalloped Ring
             if (j === 0) {
               const outerVertices = [], innerVertices = [];
               const scallopCount = symmetry * 3, scallopAmplitude = layerWidth * 0.4;
+              // THE FIX: Ensure the inner radius for the path is never zero
+              const r_inner_safe = Math.max(1, innerRadius);
               for (let k = 0; k <= scallopCount; k++) {
                 const scallopAngle = (k / scallopCount) * (Math.PI * 2);
                 const r_outer = layerRadius - (scallopAmplitude / 2) + scallopAmplitude * Math.sin(scallopAngle * symmetry);
                 outerVertices.push(new Two.Vector(center.x + r_outer * Math.cos(scallopAngle), center.y + r_outer * Math.sin(scallopAngle)));
-                innerVertices.push(new Two.Vector(center.x + innerRadius * Math.cos(scallopAngle), center.y + innerRadius * Math.sin(scallopAngle)));
+                innerVertices.push(new Two.Vector(center.x + r_inner_safe * Math.cos(scallopAngle), center.y + r_inner_safe * Math.sin(scallopAngle)));
               }
               shape = new Two.Path(outerVertices.concat(innerVertices.reverse()), true);
               two.add(shape);
@@ -203,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           case 8: // Dotted Ring
             shape = two.makeCircle(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle), 3);
+            two.add(shape);
             break;
 
           case 9: // Triangles
@@ -221,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             shape = two.makeRoundedRectangle(0, 0, shapeSize, shapeSize, corner);
             shape.rotation = angle;
             shape.translation.set(center.x + (innerRadius + layerWidth / 2) * Math.cos(angle), center.y + (innerRadius + layerWidth / 2) * Math.sin(angle));
+            two.add(shape);
             break;
 
           case 11: // Dashed Line Ring
@@ -229,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
               const circumference = Math.PI * 2 * (innerRadius + layerWidth / 2);
               const dashLength = circumference / symmetry / 2;
               (shape as Two.Circle).dashes = [dashLength, dashLength * (0.5 + prng.nextFloat())];
+              two.add(shape);
             }
             break;
 
@@ -239,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             (shape as Two.Ellipse).vertices[0].x -= teardropLength * 0.25;
             shape.rotation = angle;
             shape.translation.set(center.x + (innerRadius + teardropLength / 2) * Math.cos(angle), center.y + (innerRadius + teardropLength / 2) * Math.sin(angle));
+            two.add(shape);
             break;
 
           case 13: // Leaf Petals
@@ -256,30 +270,40 @@ document.addEventListener('DOMContentLoaded', () => {
           const shapesToStyle = (shape as any).children || [shape];
           for (const s of shapesToStyle) {
             // Logic for shapes that are ALWAYS strokes
-            if ([3, 4, 11].includes(shapeType)) {
-              s.noFill();
-              s.stroke = layerColor;
-              s.linewidth = 1.5;
+            if (shapeType == 3) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
+            }
+            else if (shapeType == 4) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
+            }
+            else if (shapeType == 11) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
             }
             // Logic for the smart Solid/Separator Ring
-            else if (shapeType === 5) {
-              s.noFill();
-              s.stroke = layerColor;
-              s.linewidth = styleChoice < 0.5 ? layerWidth * 0.95 : 1.5;
+            else if (shapeType == 5) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = styleChoice < 0.5 ? STROKE_WIDTH : 1.5;
             }
             // Logic for all other shapes
             else {
               if (styleChoice < 0.5) { // Fill Only
-                s.fill = layerColor;
-                s.noStroke();
+                s.fill = 'none';
+                s.stroke = strokeColor;
               } else if (styleChoice < 0.85) { // Stroke Only
-                s.noFill();
-                s.stroke = layerColor;
-                s.linewidth = 1.5;
+                s.fill = 'none';
+                s.stroke = strokeColor;
+                s.linewidth = STROKE_WIDTH;
               } else { // Fill + Contrast Stroke
-                s.fill = layerColor;
-                s.stroke = contrastColor;
-                s.linewidth = 2;
+                s.fill = 'none'
+                s.stroke = strokeColor;
+                s.linewidth = STROKE_WIDTH;
               }
             }
           }
