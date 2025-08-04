@@ -2,7 +2,7 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background-color: #FAF9F6;
-  color: #1a1a1a;
+  color: #000000;
   display: grid;
   place-items: center;
   height: 100vh;
@@ -13,7 +13,7 @@ body {
 /* Dark Mode Styles */
 body.dark-mode {
   background-color: #0B132B;
-  color: #e0e0e0;
+  color: #ffffff;
 }
 
 body.dark-mode .info-display code {
