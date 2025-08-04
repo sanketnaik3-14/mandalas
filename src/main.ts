@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let layers: number;
     let symmetry: number;
-    const minLayers = 7, maxLayers = 12;
-    const minSymmetry = 15, maxSymmetry = 80;
+    const minLayers = , maxLayers = 18;
+    const minSymmetry = 20, maxSymmetry = 80;
 
     if (prng.nextFloat() < 0.5) {
       layers = prng.nextInt(minLayers, maxLayers);
@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedPalette = palettes[prng.nextInt(0, palettes.length - 1)];
     const isDarkMode = document.body.classList.contains('dark-mode');
     const contrastColor = isDarkMode ? '#FFFFFF' : '#000000';
+    const strokeColor = isDarkMode ? '#CCCCCC' : '#333333';
+    const STROKE_WIDTH = 1;
 
     const center = { x: two.width / 2, y: two.height / 2 };
     const maxRadius = two.width / 2 * 0.9;
@@ -120,6 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let j = 0; j < symmetry; j++) {
         const angle = (j / symmetry) * (Math.PI * 2);
 
+        // This switch block creates the shape. Styling is handled below.
+        let shape: Two.Object | Two.Group | null = null;
+
         switch (shapeType) {
           case 0: // Fine Spikes
             const angleStepSpike = (Math.PI * 2) / symmetry;
@@ -127,26 +132,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const tip = new Two.Vector(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle));
             const baseLeft = new Two.Vector(center.x + spikeInnerR * Math.cos(angle - angleStepSpike / 2), center.y + spikeInnerR * Math.sin(angle - angleStepSpike / 2));
             const baseRight = new Two.Vector(center.x + spikeInnerR * Math.cos(angle + angleStepSpike / 2), center.y + spikeInnerR * Math.sin(angle + angleStepSpike / 2));
-            const spike = new Two.Path([tip, baseLeft, baseRight], true);
-            if (styleChoice < 0.5) { spike.fill = layerColor; spike.noStroke(); }
-            else { spike.noFill(); spike.stroke = layerColor; spike.linewidth = 1.5; }
-            two.add(spike);
+            shape = new Two.Path([tip, baseLeft, baseRight], true);
+            two.add(shape);
             break;
 
           case 1: // Arched Gates
             const archInnerR = layerRadius * 0.7;
             const startAngle = angle - (Math.PI / symmetry) * 0.8;
             const endAngle = angle + (Math.PI / symmetry) * 0.8;
-            const arch = two.makeArcSegment(center.x, center.y, archInnerR, layerRadius, startAngle, endAngle);
-            if (styleChoice < 0.5) { arch.fill = layerColor; arch.noStroke(); }
-            else { arch.noFill(); arch.stroke = layerColor; arch.linewidth = 1.5; }
+            shape = two.makeArcSegment(center.x, center.y, archInnerR, layerRadius, startAngle, endAngle);
+            two.add(shape);
             break;
 
           case 2: // Woven Ring
             if (j === 0) {
               const outerVertices = [], innerVertices = [];
               const weaveCount = symmetry * 3, weaveAmplitude = layerWidth * 0.25;
-              const baseRingRadius = innerRadius + (layerWidth / 2);
+              // THE FIX: Ensure baseRingRadius is never zero
+              const baseRingRadius = Math.max(1, innerRadius + (layerWidth / 2));
               const weaveFrequency = Math.max(3, Math.floor(symmetry / 2));
               for (let k = 0; k <= weaveCount; k++) {
                 const weaveAngle = (k / weaveCount) * (Math.PI * 2);
@@ -154,10 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 outerVertices.push(new Two.Vector(center.x + (baseRingRadius + weaveAmplitude * waveFactor) * Math.cos(weaveAngle), center.y + (baseRingRadius + weaveAmplitude * waveFactor) * Math.sin(weaveAngle)));
                 innerVertices.push(new Two.Vector(center.x + (baseRingRadius - weaveAmplitude * waveFactor) * Math.cos(weaveAngle), center.y + (baseRingRadius - weaveAmplitude * waveFactor) * Math.sin(weaveAngle)));
               }
-              const wovenPath = new Two.Path(outerVertices.concat(innerVertices.reverse()), true);
-              if (styleChoice < 0.5) { wovenPath.fill = layerColor; wovenPath.noStroke(); }
-              else { wovenPath.noFill(); wovenPath.stroke = layerColor; wovenPath.linewidth = 1.5; }
-              two.add(wovenPath);
+              shape = new Two.Path(outerVertices.concat(innerVertices.reverse()), true);
+              two.add(shape);
             }
             break;
 
@@ -165,63 +166,47 @@ document.addEventListener('DOMContentLoaded', () => {
             const angleStepLattice = (Math.PI * 2) / symmetry;
             const x1 = center.x + Math.cos(angle) * innerRadius, y1 = center.y + Math.sin(angle) * innerRadius;
             const x2 = center.x + Math.cos(angle + angleStepLattice) * layerRadius, y2 = center.y + Math.sin(angle + angleStepLattice) * layerRadius;
-            two.makeLine(x1, y1, x2, y2).stroke = layerColor;
+            const line1 = two.makeLine(x1, y1, x2, y2);
             const x3 = center.x + Math.cos(angle) * layerRadius, y3 = center.y + Math.sin(angle) * layerRadius;
             const x4 = center.x + Math.cos(angle + angleStepLattice) * innerRadius, y4 = center.y + Math.sin(angle + angleStepLattice) * innerRadius;
-            two.makeLine(x3, y3, x4, y4).stroke = layerColor;
+            const line2 = two.makeLine(x3, y3, x4, y4);
+            shape = two.makeGroup(line1, line2);
+            two.add(shape);
             break;
 
           case 4: // Boundary Ring
             if (j === 0) {
               const inner = two.makeCircle(center.x, center.y, innerRadius);
-              inner.noFill(); inner.stroke = layerColor; inner.linewidth = 1.5;
               const outer = two.makeCircle(center.x, center.y, layerRadius);
-              outer.noFill(); outer.stroke = layerColor; outer.linewidth = 1.5;
-            }
-            break;
-
-          // REPLACED WITH GRADIENT RING
-          case 5: // Gradient Ring
-            if (j === 0) {
-              const color1 = selectedPalette.colors[i % selectedPalette.colors.length];
-              const color2 = selectedPalette.colors[(i + 1) % selectedPalette.colors.length];
-              const gradient = two.makeLinearGradient(
-                center.x, center.y - (innerRadius + layerWidth / 2),
-                center.x, center.y + (innerRadius + layerWidth / 2),
-                new Two.Stop(0, color1),
-                new Two.Stop(1, color2)
-              );
-              const ring = two.makeCircle(center.x, center.y, innerRadius + layerWidth / 2);
-              ring.noFill();
-              ring.stroke = gradient;
-              ring.linewidth = layerWidth * 0.95;
+              shape = two.makeGroup(inner, outer);
+              two.add(shape);
             }
             break;
 
           case 6: // Negative Space
+
             break;
 
           case 7: // Scalloped Ring
             if (j === 0) {
               const outerVertices = [], innerVertices = [];
               const scallopCount = symmetry * 3, scallopAmplitude = layerWidth * 0.4;
+              // THE FIX: Ensure the inner radius for the path is never zero
+              const r_inner_safe = Math.max(1, innerRadius);
               for (let k = 0; k <= scallopCount; k++) {
                 const scallopAngle = (k / scallopCount) * (Math.PI * 2);
                 const r_outer = layerRadius - (scallopAmplitude / 2) + scallopAmplitude * Math.sin(scallopAngle * symmetry);
                 outerVertices.push(new Two.Vector(center.x + r_outer * Math.cos(scallopAngle), center.y + r_outer * Math.sin(scallopAngle)));
-                innerVertices.push(new Two.Vector(center.x + innerRadius * Math.cos(scallopAngle), center.y + innerRadius * Math.sin(scallopAngle)));
+                innerVertices.push(new Two.Vector(center.x + r_inner_safe * Math.cos(scallopAngle), center.y + r_inner_safe * Math.sin(scallopAngle)));
               }
-              const scallopPath = new Two.Path(outerVertices.concat(innerVertices.reverse()), true);
-              if (styleChoice < 0.5) { scallopPath.fill = layerColor; scallopPath.noStroke(); }
-              else { scallopPath.noFill(); scallopPath.stroke = layerColor; scallopPath.linewidth = 1.5; }
-              two.add(scallopPath);
+              shape = new Two.Path(outerVertices.concat(innerVertices.reverse()), true);
+              two.add(shape);
             }
             break;
 
           case 8: // Dotted Ring
-            const dot = two.makeCircle(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle), 3);
-            if (styleChoice < 0.5) { dot.fill = layerColor; dot.noStroke(); }
-            else { dot.noFill(); dot.stroke = layerColor; dot.linewidth = 1.5; }
+            shape = two.makeCircle(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle), 3);
+            two.add(shape);
             break;
 
           case 9: // Triangles
@@ -230,59 +215,92 @@ document.addEventListener('DOMContentLoaded', () => {
             const t1 = new Two.Vector(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle));
             const t2 = new Two.Vector(center.x + triangleInnerR * Math.cos(angle - angleStepTriangle / 2), center.y + triangleInnerR * Math.sin(angle - angleStepTriangle / 2));
             const t3 = new Two.Vector(center.x + triangleInnerR * Math.cos(angle + angleStepTriangle / 2), center.y + triangleInnerR * Math.sin(angle + angleStepTriangle / 2));
-            const triangle = new Two.Path([t1, t2, t3], true);
-            if (styleChoice < 0.5) { triangle.fill = layerColor; triangle.noStroke(); }
-            else { triangle.noFill(); triangle.stroke = layerColor; triangle.linewidth = 1.5; }
-            two.add(triangle);
+            shape = new Two.Path([t1, t2, t3], true);
+            two.add(shape);
             break;
 
           case 10: // Super-ellipse
             const shapeSize = Math.min(layerWidth * 0.8, (Math.PI * 2 * (innerRadius + layerWidth / 2)) / symmetry * 0.8);
             const corner = shapeSize * 0.5 * prng.nextFloat();
-            const superellipse = two.makeRoundedRectangle(0, 0, shapeSize, shapeSize, corner);
-            if (styleChoice < 0.5) { superellipse.fill = layerColor; superellipse.noStroke(); }
-            else { superellipse.noFill(); superellipse.stroke = layerColor; superellipse.linewidth = 1.5; }
-            superellipse.rotation = angle;
-            superellipse.translation.set(center.x + (innerRadius + layerWidth / 2) * Math.cos(angle), center.y + (innerRadius + layerWidth / 2) * Math.sin(angle));
+            shape = two.makeRoundedRectangle(0, 0, shapeSize, shapeSize, corner);
+            shape.rotation = angle;
+            shape.translation.set(center.x + (innerRadius + layerWidth / 2) * Math.cos(angle), center.y + (innerRadius + layerWidth / 2) * Math.sin(angle));
+            two.add(shape);
             break;
 
           case 11: // Dashed Line Ring
             if (j === 0) {
-              const ring = two.makeCircle(center.x, center.y, innerRadius + layerWidth / 2);
-              ring.noFill();
-              ring.stroke = layerColor;
-              ring.linewidth = 1.5;
+              shape = two.makeCircle(center.x, center.y, innerRadius + layerWidth / 2);
               const circumference = Math.PI * 2 * (innerRadius + layerWidth / 2);
               const dashLength = circumference / symmetry / 2;
-              ring.dashes = [dashLength, dashLength * (0.5 + prng.nextFloat())];
+              (shape as Two.Circle).dashes = [dashLength, dashLength * (0.5 + prng.nextFloat())];
+              two.add(shape);
             }
             break;
 
           case 12: // Teardrop Petals
             const teardropLength = layerWidth * 0.9;
             const teardropWidth = (Math.PI * 2 * innerRadius) / symmetry * 0.4;
-            const teardrop = two.makeEllipse(0, 0, teardropLength / 2, teardropWidth / 2);
-            teardrop.vertices[0].x -= teardropLength * 0.25;
-            if (styleChoice < 0.5) { teardrop.fill = layerColor; teardrop.noStroke(); }
-            else { teardrop.noFill(); teardrop.stroke = layerColor; teardrop.linewidth = 1.5; }
-            teardrop.rotation = angle;
-            teardrop.translation.set(center.x + (innerRadius + teardropLength / 2) * Math.cos(angle), center.y + (innerRadius + teardropLength / 2) * Math.sin(angle));
+            shape = two.makeEllipse(0, 0, teardropLength / 2, teardropWidth / 2);
+            (shape as Two.Ellipse).vertices[0].x -= teardropLength * 0.25;
+            shape.rotation = angle;
+            shape.translation.set(center.x + (innerRadius + teardropLength / 2) * Math.cos(angle), center.y + (innerRadius + teardropLength / 2) * Math.sin(angle));
+            two.add(shape);
             break;
 
           case 13: // Leaf Petals
             const leafLength = layerWidth;
             const leafWidth = (Math.PI * 2 * innerRadius) / symmetry * 0.5;
-            const leaf = new Two.Path([new Two.Anchor(0, 0), new Two.Anchor(leafLength / 2, -leafWidth / 2), new Two.Anchor(leafLength, 0), new Two.Anchor(leafLength / 2, leafWidth / 2)], true, true);
-            if (styleChoice < 0.5) { leaf.fill = layerColor; leaf.noStroke(); }
-            else { leaf.noFill(); leaf.stroke = layerColor; leaf.linewidth = 1.5; }
-            leaf.rotation = angle;
-            leaf.translation.set(center.x + innerRadius * Math.cos(angle), center.y + innerRadius * Math.sin(angle));
-            two.add(leaf);
+            shape = new Two.Path([new Two.Anchor(0, 0), new Two.Anchor(leafLength / 2, -leafWidth / 2), new Two.Anchor(leafLength, 0), new Two.Anchor(leafLength / 2, leafWidth / 2)], true, true);
+            shape.rotation = angle;
+            shape.translation.set(center.x + innerRadius * Math.cos(angle), center.y + innerRadius * Math.sin(angle));
+            two.add(shape);
             break;
+        }
+
+        // Apply styling to the created shape
+        if (shape) {
+          const shapesToStyle = (shape as any).children || [shape];
+          for (const s of shapesToStyle) {
+            // Logic for shapes that are ALWAYS strokes
+            if (shapeType == 3) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
+            }
+            else if (shapeType == 4) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
+            }
+            else if (shapeType == 11) {
+              s.fill = 'none';
+              s.stroke = strokeColor;
+              s.linewidth = STROKE_WIDTH;
+            }
+
+            // Logic for all other shapes
+            else {
+              if (styleChoice < 0.5) { // Fill Only
+                s.fill = 'none';
+                s.stroke = strokeColor;
+              } else if (styleChoice < 0.85) { // Stroke Only
+                s.fill = 'none';
+                s.stroke = strokeColor;
+                s.linewidth = STROKE_WIDTH;
+              } else { // Fill + Contrast Stroke
+                s.fill = 'none'
+                s.stroke = strokeColor;
+                s.linewidth = STROKE_WIDTH;
+              }
+            }
+          }
         }
       }
     }
     two.update();
+
+
   }
 
   themeToggle.addEventListener('click', () => {
