@@ -34,14 +34,14 @@ body.dark-mode .info-display code {
   display: grid;
   place-items: center;
 
-  background-color: #1C1C1E;
+  background-color: #FFFFFF;
   /* A soft, light beige for Light Mode */
   border: 2px solid #FFFFFF;
   transition: background-color 0.3s;
 }
 
 body.dark-mode #mandala-canvas {
-  background-color: #F7F7F7;
+  background-color: #000000;
   /* A slightly softer black for Dark Mode */
   border: 1px solid #000000;
   /* --- END NEW --- */
