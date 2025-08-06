@@ -4,7 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { SeededRandom } from './prng';
 
 // --- Your 45 Curated Color Palettes ---
+// --- Your Curated Color Palettes ---
 const palettes = [
+  // Original Palettes
   { name: 'Desert Sunset', colors: ['#E27D60', '#85CDCA', '#E8A87C', '#C38D9E', '#41B3A3'] },
   { name: 'Ocean Depths', colors: ['#012E4A', '#036280', '#2A9D8F', '#E9C46A', '#F4A261'] },
   { name: 'Forest Moss', colors: ['#354F52', '#52796F', '#84A98C', '#CAD2C5', '#A5A58D'] },
@@ -50,6 +52,28 @@ const palettes = [
   { name: 'Klimt Gold', colors: ['#D4AF37', '#C19E41', '#AE8D4B', '#9B7C55', '#886B5F'] },
   { name: 'Rainbow Spectrum', colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'] },
   { name: 'Blackwork', colors: ['#000000', '#222222', '#444444', '#666666', '#888888', '#AAAAAA'] },
+
+  // --- NEW PALETTES ADDED ---
+  { name: 'Forest Canopy', colors: ['#1A3C2F', '#2D6A4F', '#4CAF50', '#81C784', '#C8E6C9'] },
+  { name: 'Desert Mirage', colors: ['#FF9A76', '#FF6B6B', '#FFD166', '#6D6875', '#B5838D'] },
+  { name: 'Ocean Depths 2', colors: ['#03045E', '#0077B6', '#00B4D8', '#90E0EF', '#CAF0F8'] },
+  { name: 'Mountain Sunset', colors: ['#5E548E', '#9F86C0', '#E0B1CB', '#F9C74F', '#F9844A'] },
+  { name: 'Aurora Borealis', colors: ['#0466C8', '#0353A4', '#023E7D', '#5E60CE', '#7400B8'] },
+  { name: 'Serenity', colors: ['#8ECAE6', '#219EBC', '#023047', '#FFB703', '#FB8500'] },
+  { name: 'Passion Flame', colors: ['#FF0000', '#FF5400', '#FFBD00', '#FF0054', '#9E0059'] },
+  { name: 'Meditative State', colors: ['#606C38', '#283618', '#FEFAE0', '#DDA15E', '#BC6C25'] },
+  { name: 'Joyful Harmony', colors: ['#FF6D00', '#FF7900', '#FF8500', '#FF9100', '#FF9E00'] },
+  { name: 'Mystic Journey', colors: ['#5A189A', '#7B2CBF', '#9D4EDD', '#C77DFF', '#E0AAFF'] },
+  { name: 'Zen Garden', colors: ['#F8F9FA', '#E9ECEF', '#DEE2E6', '#CED4DA', '#ADB5BD'] },
+  { name: 'Hindu Festival', colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#1A535C', '#F7FFF7'] },
+  { name: 'Native Earth', colors: ['#BC6C25', '#DDA15E', '#606C38', '#283618', '#FEFAE0'] },
+  { name: 'Celtic Knot', colors: ['#0B132B', '#1C2541', '#3A506B', '#5BC0BE', '#6FFFE9'] },
+  { name: 'Buddhist Peace', colors: ['#FAD2E1', '#C5DEDD', '#DBE7E4', '#F0EFEB', '#D6E2E9'] },
+  { name: 'Quantum Field', colors: ['#000000', '#14213D', '#FCA311', '#E5E5E5', '#FFFFFF'] },
+  { name: 'Galaxy Core', colors: ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C', '#D90429'] },
+  { name: 'BioLuminescence', colors: ['#0D1B2A', '#1B263B', '#415A77', '#778DA9', '#A3B18A'] },
+  { name: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
+  { name: 'Time Portal', colors: ['#000814', '#001D3D', '#003566', '#FFC300', '#FFD60A'] },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
