@@ -4,7 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { SeededRandom } from './prng';
 
 // --- Your 45 Curated Color Palettes ---
+// --- Your Curated Color Palettes ---
 const palettes = [
+  // Original Palettes
   { name: 'Desert Sunset', colors: ['#E27D60', '#85CDCA', '#E8A87C', '#C38D9E', '#41B3A3'] },
   { name: 'Ocean Depths', colors: ['#012E4A', '#036280', '#2A9D8F', '#E9C46A', '#F4A261'] },
   { name: 'Forest Moss', colors: ['#354F52', '#52796F', '#84A98C', '#CAD2C5', '#A5A58D'] },
@@ -50,6 +52,28 @@ const palettes = [
   { name: 'Klimt Gold', colors: ['#D4AF37', '#C19E41', '#AE8D4B', '#9B7C55', '#886B5F'] },
   { name: 'Rainbow Spectrum', colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'] },
   { name: 'Blackwork', colors: ['#000000', '#222222', '#444444', '#666666', '#888888', '#AAAAAA'] },
+
+  // --- NEW PALETTES ADDED ---
+  { name: 'Forest Canopy', colors: ['#1A3C2F', '#2D6A4F', '#4CAF50', '#81C784', '#C8E6C9'] },
+  { name: 'Desert Mirage', colors: ['#FF9A76', '#FF6B6B', '#FFD166', '#6D6875', '#B5838D'] },
+  { name: 'Ocean Depths 2', colors: ['#03045E', '#0077B6', '#00B4D8', '#90E0EF', '#CAF0F8'] },
+  { name: 'Mountain Sunset', colors: ['#5E548E', '#9F86C0', '#E0B1CB', '#F9C74F', '#F9844A'] },
+  { name: 'Aurora Borealis', colors: ['#0466C8', '#0353A4', '#023E7D', '#5E60CE', '#7400B8'] },
+  { name: 'Serenity', colors: ['#8ECAE6', '#219EBC', '#023047', '#FFB703', '#FB8500'] },
+  { name: 'Passion Flame', colors: ['#FF0000', '#FF5400', '#FFBD00', '#FF0054', '#9E0059'] },
+  { name: 'Meditative State', colors: ['#606C38', '#283618', '#FEFAE0', '#DDA15E', '#BC6C25'] },
+  { name: 'Joyful Harmony', colors: ['#FF6D00', '#FF7900', '#FF8500', '#FF9100', '#FF9E00'] },
+  { name: 'Mystic Journey', colors: ['#5A189A', '#7B2CBF', '#9D4EDD', '#C77DFF', '#E0AAFF'] },
+  { name: 'Zen Garden', colors: ['#F8F9FA', '#E9ECEF', '#DEE2E6', '#CED4DA', '#ADB5BD'] },
+  { name: 'Hindu Festival', colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#1A535C', '#F7FFF7'] },
+  { name: 'Native Earth', colors: ['#BC6C25', '#DDA15E', '#606C38', '#283618', '#FEFAE0'] },
+  { name: 'Celtic Knot', colors: ['#0B132B', '#1C2541', '#3A506B', '#5BC0BE', '#6FFFE9'] },
+  { name: 'Buddhist Peace', colors: ['#FAD2E1', '#C5DEDD', '#DBE7E4', '#F0EFEB', '#D6E2E9'] },
+  { name: 'Quantum Field', colors: ['#000000', '#14213D', '#FCA311', '#E5E5E5', '#FFFFFF'] },
+  { name: 'Galaxy Core', colors: ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C', '#D90429'] },
+  { name: 'BioLuminescence', colors: ['#0D1B2A', '#1B263B', '#415A77', '#778DA9', '#A3B18A'] },
+  { name: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
+  { name: 'Time Portal', colors: ['#000814', '#001D3D', '#003566', '#FFC300', '#FFD60A'] },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -114,17 +138,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const layerRadius = currentRadius + layerWidth;
       currentRadius = layerRadius;
 
-      const shapeType = prng.nextInt(0, 13);
+      const shapeType = prng.nextInt(0, 15);
       const layerColor = selectedPalette.colors[i % selectedPalette.colors.length];
       const styleChoice = prng.nextFloat();
 
-      let superformulaParams: any = null;
+      let petalParams: any = null;
       if (shapeType === 14) {
-        superformulaParams = {
-          m: prng.nextInt(3, 12),
-          n1: 1 + prng.nextFloat() * 10,
-          n2: 1 + prng.nextFloat() * 10,
-          n3: 1 + prng.nextFloat() * 10,
+        petalParams = {
+          length: layerWidth * (0.8 + prng.nextFloat() * 0.4),
+          width: (Math.PI * 2 * innerRadius) / symmetry * (0.4 + prng.nextFloat() * 0.4)
+        };
+      }
+
+      let leafParams: any = null;
+      if (shapeType === 15) {
+        leafParams = {
+          length: layerWidth * (0.9 + prng.nextFloat() * 0.2),
+          width: (Math.PI * 2 * innerRadius) / symmetry * (0.2 + prng.nextFloat() * 0.3),
+          serration: prng.nextFloat() * 0.15,
+          serration_freq: prng.nextInt(20, 60)
         };
       }
 
@@ -189,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create the shape
             const arch = two.makeArcSegment(center.x, center.y, archInnerR, layerRadius, startAngle, endAngle);
 
+
             // Apply Hybrid Render styling
             if (styleChoice < 0.5) { // Fill Only
               arch.fill = layerColor;
@@ -202,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
               arch.stroke = contrastColor;
               arch.linewidth = 2;
             }
+            two.add(arch);
             break;
 
           /*
@@ -300,6 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
             line1.linewidth = 1;
             line2.stroke = layerColor;
             line2.linewidth = 1;
+
+
             break;
           /* case 3: // Geometric Lattice (Blueprint Version)
           const angleStepLattice = (Math.PI * 2) / symmetry;
@@ -376,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ring.noFill();
               ring.stroke = gradient; // Apply the gradient as the stroke
               ring.linewidth = layerWidth * 0.95; // Use a thick stroke to create the ring
+              two.add(ring);
             }
             break;
 
@@ -469,6 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
               dot.stroke = contrastColor;
               dot.linewidth = 2;
             }
+            two.add(dot);
             break;
 
           /*case 8: // Dotted Ring (Blueprint Version)
@@ -556,6 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
               center.x + (innerRadius + layerWidth / 2) * Math.cos(angle),
               center.y + (innerRadius + layerWidth / 2) * Math.sin(angle)
             );
+            two.add(superellipse);
             break;
 
           /*case 10: // Super-ellipse (Blueprint Version)
@@ -639,6 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
               center.x + (innerRadius + teardropLength / 2) * Math.cos(angle),
               center.y + (innerRadius + teardropLength / 2) * Math.sin(angle)
             );
+            two.add(teardrop);
             break;
 
           /*case 12: // Teardrop Petals (Blueprint Version)
@@ -722,87 +762,14 @@ document.addEventListener('DOMContentLoaded', () => {
           );
           two.add(leaf);
           break;*/
-          case 14: // Superformula (Stylized Version)
-            const points = [];
-            const numPoints = 120;
-            const shapeRadius = Math.min(layerWidth, (Math.PI * 2 * (innerRadius + layerWidth / 2)) / symmetry) * 0.45;
-
-            // The parameters are randomized to create a unique shape
-            const { m, n1, n2, n3 } = superformulaParams;
-            const a = 1, b = 1;
-
-            for (let k = 0; k < numPoints; k++) {
-              const theta = (k / numPoints) * (Math.PI * 2);
-              const part1 = Math.cos(m * theta / 4) / a;
-              const part2 = Math.sin(m * theta / 4) / b;
-              const r_comp = Math.pow(Math.abs(part1), n2) + Math.pow(Math.abs(part2), n3);
-              if (r_comp === 0) continue;
-              const r = Math.pow(r_comp, -1 / n1);
-              points.push(new Two.Anchor(shapeRadius * r * Math.cos(theta), shapeRadius * r * Math.sin(theta)));
-            }
-
-            if (points.length > 0) {
-              const shape = new Two.Path(points, true);
-
-              // Apply Hybrid Render styling
-              if (styleChoice < 0.5) { // Fill Only
-                shape.fill = layerColor;
-                shape.noStroke();
-              } else if (styleChoice < 0.85) { // Stroke Only
-                shape.noFill();
-                shape.stroke = layerColor;
-                shape.linewidth = 1.5;
-              } else { // Fill + Contrast Stroke
-                shape.fill = layerColor;
-                shape.stroke = contrastColor;
-                shape.linewidth = 2;
-              }
-
-              shape.rotation = angle;
-              shape.translation.set(center.x + (innerRadius + layerWidth / 2) * Math.cos(angle), center.y + (innerRadius + layerWidth / 2) * Math.sin(angle));
-              two.add(shape);
-            }
-            break;
-
-          /*case 14: // Superformula (Blueprint Version)
-          const points = [];
-          const numPoints = 120;
-          const shapeRadius = Math.min(layerWidth, (Math.PI * 2 * (innerRadius + layerWidth / 2)) / symmetry) * 0.45;
-
-          // The parameters are still randomized to create a unique outline
-          const { m, n1, n2, n3 } = superformulaParams;
-          const a = 1, b = 1;
-
-          for (let k = 0; k < numPoints; k++) {
-            const theta = (k / numPoints) * (Math.PI * 2);
-            const part1 = Math.cos(m * theta / 4) / a;
-            const part2 = Math.sin(m * theta / 4) / b;
-            const r_comp = Math.pow(Math.abs(part1), n2) + Math.pow(Math.abs(part2), n3);
-            if (r_comp === 0) continue;
-            const r = Math.pow(r_comp, -1 / n1);
-            points.push(new Two.Anchor(shapeRadius * r * Math.cos(theta), shapeRadius * r * Math.sin(theta)));
-          }
-          if (points.length > 0) {
-            const shape = new Two.Path(points, true);
-
-            // Apply Blueprint styling
-            shape.noFill();
-            shape.stroke = strokeColor;
-            shape.linewidth = 1.5;
-
-            shape.rotation = angle;
-            shape.translation.set(center.x + (innerRadius + layerWidth / 2) * Math.cos(angle), center.y + (innerRadius + layerWidth / 2) * Math.sin(angle));
-            two.add(shape);
-          }
-          break;*/
 
           // --- NEW PARAMETRIC SHAPES ---
-          case 15: // Parametric Petal (Stylized Version)
+          case 14: // Parametric Petal (Stylized Version)
             const p_points = [];
             const p_steps = 100;
             // The petal's length and width are still random for variety
-            const p_length = layerWidth * (0.8 + prng.nextFloat() * 0.4);
-            const p_width = (Math.PI * 2 * innerRadius) / symmetry * (0.4 + prng.nextFloat() * 0.4);
+            // Use the pre-calculated parameters
+            const { length: p_length, width: p_width } = petalParams;
 
             for (let k = 0; k <= p_steps; k++) {
               const t = (Math.PI / p_steps) * k;
@@ -864,24 +831,22 @@ document.addEventListener('DOMContentLoaded', () => {
           two.add(shape);
           break;*/
 
-          case 16: // Parametric Leaf (Stylized Version)
+          case 15: // Parametric Leaf (Stylized Version)
             const l_steps_st = 100;
-            const l_length_st = layerWidth * (0.9 + prng.nextFloat() * 0.2);
-            const l_width_st = (Math.PI * 2 * innerRadius) / symmetry * (0.2 + prng.nextFloat() * 0.3);
-            const serration_st = prng.nextFloat() * 0.15;
-            const serration_freq_st = prng.nextInt(20, 60);
-
             const l_points_st = [];
+            // Use the pre-calculated parameters
+            const { length: l_length, width: l_width, serration, serration_freq } = leafParams;
+
             for (let k = 0; k <= l_steps_st; k++) {
               const t = (Math.PI / l_steps_st) * k;
-              const baseWidth = l_width_st * Math.sin(t) * Math.cos(t);
-              const jaggedEdge = 1 + serration_st * Math.cos(t * serration_freq_st);
-              const x = l_length_st * Math.sin(t);
+              const baseWidth = l_width * Math.sin(t) * Math.cos(t);
+              const jaggedEdge = 1 + serration * Math.cos(t * serration_freq);
+              const x = l_length * Math.sin(t);
               const y = baseWidth * jaggedEdge;
               l_points_st.push(new Two.Anchor(x, y));
             }
             const leafPath_st = new Two.Path(l_points_st, false, false);
-            const vein_st = new Two.Line(0, 0, l_length_st, 0);
+            const vein_st = new Two.Line(0, 0, l_length, 0);
             const shape_st = two.makeGroup(leafPath_st, vein_st);
 
             // Apply Hybrid Render styling
@@ -909,7 +874,10 @@ document.addEventListener('DOMContentLoaded', () => {
               center.x + innerRadius * Math.cos(angle),
               center.y + innerRadius * Math.sin(angle)
             );
+
+            two.add(shape_st);
             break;
+
 
           /*case 16: // Parametric Leaf (Blueprint Version)
           const l_steps_bp = 100;
@@ -944,7 +912,9 @@ document.addEventListener('DOMContentLoaded', () => {
             center.y + innerRadius * Math.sin(angle)
           );
           break; */
+
         }
+
       }
     }
     two.update();
