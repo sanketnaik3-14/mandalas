@@ -138,9 +138,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const layerRadius = currentRadius + layerWidth;
       currentRadius = layerRadius;
 
-      const shapeType = prng.nextInt(0, 13);
+      const shapeType = prng.nextInt(0, 15);
       const layerColor = selectedPalette.colors[i % selectedPalette.colors.length];
       const styleChoice = prng.nextFloat();
+      // Add this block
+      // --- Pre-calculate parameters for complex shapes ONCE per layer ---
+      let petalParams: any = null;
+      if (shapeType === 13) {
+        petalParams = {
+          length: layerWidth * (0.8 + prng.nextFloat() * 0.4),
+          width: (Math.PI * 2 * innerRadius) / symmetry * (0.4 + prng.nextFloat() * 0.4)
+        };
+      }
+
+      let leafParams: any = null;
+      if (shapeType === 15) {
+        leafParams = {
+          length: layerWidth * (0.9 + prng.nextFloat() * 0.2),
+          width: (Math.PI * 2 * innerRadius) / symmetry * (0.2 + prng.nextFloat() * 0.3),
+          serration: prng.nextFloat() * 0.15,
+          serration_freq: prng.nextInt(20, 60)
+        };
+      }
+      // --- End of new block ---
 
       let superformulaParams: any = null;
       if (shapeType === 14) {
@@ -552,58 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
           two.add(triangle);
           break;*/
 
-          case 10: // Super-ellipse (Stylized Version)
-            // Calculate a safe size for the shape to fit in its segment
-            const shapeSize = Math.min(layerWidth * 0.8, (Math.PI * 2 * (innerRadius + layerWidth / 2)) / symmetry * 0.8);
-            // The corner roundness is still random for variety
-            const corner = shapeSize * 0.5 * prng.nextFloat();
 
-            const superellipse = two.makeRoundedRectangle(0, 0, shapeSize, shapeSize, corner);
-
-            // Apply Hybrid Render styling
-            if (styleChoice < 0.5) { // Fill Only
-              superellipse.fill = layerColor;
-              superellipse.noStroke();
-            } else if (styleChoice < 0.85) { // Stroke Only
-              superellipse.noFill();
-              superellipse.stroke = layerColor;
-              superellipse.linewidth = 1.5;
-            } else { // Fill + Contrast Stroke
-              superellipse.fill = layerColor;
-              superellipse.stroke = contrastColor;
-              superellipse.linewidth = 2;
-            }
-
-            // Position the shape in the layer
-            superellipse.rotation = angle;
-            superellipse.translation.set(
-              center.x + (innerRadius + layerWidth / 2) * Math.cos(angle),
-              center.y + (innerRadius + layerWidth / 2) * Math.sin(angle)
-            );
-            break;
-
-          /*case 10: // Super-ellipse (Blueprint Version)
-          // Calculate a safe size for the shape to fit in its segment
-          const shapeSize = Math.min(layerWidth * 0.8, (Math.PI * 2 * (innerRadius + layerWidth / 2)) / symmetry * 0.8);
-          // The corner roundness is still random for variety
-          const corner = shapeSize * 0.5 * prng.nextFloat(); 
-          
-          const superellipse = two.makeRoundedRectangle(0, 0, shapeSize, shapeSize, corner);
-
-          // Apply Blueprint styling
-          superellipse.noFill();
-          superellipse.stroke = strokeColor; // Monochrome theme color
-          superellipse.linewidth = 1.5;
-
-          // Position the shape in the layer
-          superellipse.rotation = angle;
-          superellipse.translation.set(
-            center.x + (innerRadius + layerWidth / 2) * Math.cos(angle),
-            center.y + (innerRadius + layerWidth / 2) * Math.sin(angle)
-          );
-          break;*/
-
-          case 11: // Dashed Line Ring (Stylized Version)
+          case 10: // Dashed Line Ring (Stylized Version)
             if (j === 0) { // Only draw once per layer
               const ring = two.makeCircle(center.x, center.y, innerRadius + layerWidth / 2);
 
@@ -635,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           break;*/
 
-          case 12: // Teardrop Petals (Stylized Version)
+          case 11: // Teardrop Petals (Stylized Version)
             const teardropLength = layerWidth * 0.9;
             const teardropWidth = (Math.PI * 2 * innerRadius) / symmetry * 0.4;
 
@@ -686,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
           );
           break;*/
 
-          case 13: // Leaf Petals (Stylized Version)
+          case 12: // Leaf Petals (Stylized Version)
             const leafLength = layerWidth;
             const leafWidth = (Math.PI * 2 * innerRadius) / symmetry * 0.5;
 
@@ -821,12 +791,12 @@ document.addEventListener('DOMContentLoaded', () => {
           break;*/
 
           // --- NEW PARAMETRIC SHAPES ---
-          case 15: // Parametric Petal (Stylized Version)
+          case 13: // Parametric Petal (Stylized Version)
             const p_points = [];
             const p_steps = 100;
             // The petal's length and width are still random for variety
-            const p_length = layerWidth * (0.8 + prng.nextFloat() * 0.4);
-            const p_width = (Math.PI * 2 * innerRadius) / symmetry * (0.4 + prng.nextFloat() * 0.4);
+            // Use the pre-calculated parameters
+            const { length: p_length, width: p_width } = petalParams;
 
             for (let k = 0; k <= p_steps; k++) {
               const t = (Math.PI / p_steps) * k;
@@ -859,7 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
             two.add(shape);
             break;
 
-          /*case 15: // Parametric Petal (Blueprint Version)
+          /*case 13: // Parametric Petal (Blueprint Version)
           const p_points = [];
           const p_steps = 100;
           // The petal's length and width are still random for variety
@@ -888,24 +858,22 @@ document.addEventListener('DOMContentLoaded', () => {
           two.add(shape);
           break;*/
 
-          case 16: // Parametric Leaf (Stylized Version)
+          case 15: // Parametric Leaf (Stylized Version)
             const l_steps_st = 100;
-            const l_length_st = layerWidth * (0.9 + prng.nextFloat() * 0.2);
-            const l_width_st = (Math.PI * 2 * innerRadius) / symmetry * (0.2 + prng.nextFloat() * 0.3);
-            const serration_st = prng.nextFloat() * 0.15;
-            const serration_freq_st = prng.nextInt(20, 60);
-
             const l_points_st = [];
+            // Use the pre-calculated parameters
+            const { length: l_length, width: l_width, serration, serration_freq } = leafParams;
+
             for (let k = 0; k <= l_steps_st; k++) {
               const t = (Math.PI / l_steps_st) * k;
-              const baseWidth = l_width_st * Math.sin(t) * Math.cos(t);
-              const jaggedEdge = 1 + serration_st * Math.cos(t * serration_freq_st);
-              const x = l_length_st * Math.sin(t);
+              const baseWidth = l_width * Math.sin(t) * Math.cos(t);
+              const jaggedEdge = 1 + serration * Math.cos(t * serration_freq);
+              const x = l_length * Math.sin(t);
               const y = baseWidth * jaggedEdge;
               l_points_st.push(new Two.Anchor(x, y));
             }
             const leafPath_st = new Two.Path(l_points_st, false, false);
-            const vein_st = new Two.Line(0, 0, l_length_st, 0);
+            const vein_st = new Two.Line(0, 0, l_length, 0);
             const shape_st = two.makeGroup(leafPath_st, vein_st);
 
             // Apply Hybrid Render styling
@@ -935,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             break;
 
-          /*case 16: // Parametric Leaf (Blueprint Version)
+          /*case 15: // Parametric Leaf (Blueprint Version)
           const l_steps_bp = 100;
           const l_length_bp = layerWidth * (0.9 + prng.nextFloat() * 0.2);
           const l_width_bp = (Math.PI * 2 * innerRadius) / symmetry * (0.2 + prng.nextFloat() * 0.3);
@@ -981,7 +949,6 @@ document.addEventListener('DOMContentLoaded', () => {
   button.addEventListener('click', generateMandala);
   generateMandala();
 });
-
 
 
 
