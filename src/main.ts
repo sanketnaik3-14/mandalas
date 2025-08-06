@@ -5,75 +5,61 @@ import { SeededRandom } from './prng';
 
 // --- Your 45 Curated Color Palettes ---
 // --- Your Curated Color Palettes ---
+// --- The Curated Master Color Palette Library ---
 const palettes = [
-  // Original Palettes
+  // Curated from your list
   { name: 'Desert Sunset', colors: ['#E27D60', '#85CDCA', '#E8A87C', '#C38D9E', '#41B3A3'] },
-  { name: 'Ocean Depths', colors: ['#012E4A', '#036280', '#2A9D8F', '#E9C46A', '#F4A261'] },
-  { name: 'Forest Moss', colors: ['#354F52', '#52796F', '#84A98C', '#CAD2C5', '#A5A58D'] },
   { name: 'Arctic Dawn', colors: ['#8ECAE6', '#219EBC', '#023047', '#FFB703', '#FB8500'] },
-  { name: 'Volcanic', colors: ['#D00000', '#FF9505', '#FFEA00', '#774936', '#3C0919'] },
-  { name: 'Neon Dream', colors: ['#FF00FF', '#00FFFF', '#FFFF00', '#FF0000', '#00FF00'] },
   { name: 'Jewel Tones', colors: ['#6A0DAD', '#FF0038', '#00818F', '#FFC600', '#FF6B6B'] },
   { name: 'Psychedelic', colors: ['#540D6E', '#EE4266', '#FFD23F', '#3BCEAC', '#0EAD69'] },
   { name: 'Festival', colors: ['#FF6F61', '#6B5B95', '#88B04B', '#EFC050', '#955251'] },
-  { name: 'Clay Palette', colors: ['#EDC9AF', '#E9AFA3', '#C97C5D', '#774936', '#3D2B1F'] },
-  { name: 'Desert Sands', colors: ['#D4A276', '#BC8A5F', '#A97155', '#8B5D33', '#6F4518'] },
-  { name: 'Mountain Fog', colors: ['#D0D4D8', '#A8B2C0', '#7E8A97', '#556270', '#3A4750'] },
-  { name: 'Arctic Ice', colors: ['#CAE4DB', '#DCAE1D', '#00303F', '#7A9D96', '#3A6351'] },
-  { name: 'Moonlight', colors: ['#E2DBE0', '#A8A4CE', '#7F7FBF', '#5A5A93', '#3A3A5F'] },
   { name: 'Deep Ocean', colors: ['#03045E', '#023E8A', '#0077B6', '#00B4D8', '#90E0EF'] },
   { name: 'Golden Hour', colors: ['#F7B267', '#F79D65', '#F4845F', '#F27059', '#F25C54'] },
   { name: 'Autumn Leaves', colors: ['#8C2308', '#A64600', '#BF6F00', '#D99700', '#F2C100'] },
-  { name: 'Terracotta', colors: ['#E27D60', '#E9806E', '#E8A87C', '#C38D9E', '#86C3B0'] },
-  { name: 'Azure Blues', colors: ['#03045E', '#023E8A', '#0077B6', '#00B4D8', '#90E0EF'] },
-  { name: 'Emerald Greens', colors: ['#0D3B2A', '#1A936F', '#88D498', '#C6DABF', '#EFF7E1'] },
   { name: 'Royal Purples', colors: ['#3D348B', '#7678ED', '#9B5DE5', '#F15BB5', '#FEE440'] },
   { name: 'Teal & Coral', colors: ['#2A9D8F', '#E9C46A', '#F4A261', '#E76F51', '#264653'] },
   { name: 'Amber & Indigo', colors: ['#FF9E00', '#FFD166', '#118AB2', '#073B4C', '#EF476F'] },
   { name: 'Crimson & Gold', colors: ['#9D0208', '#D00000', '#DC2F02', '#E85D04', '#FFAA00'] },
-  { name: 'Cotton Candy', colors: ['#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF'] },
-  { name: 'Easter Eggs', colors: ['#CDB4DB', '#FFC8DD', '#FFAFCC', '#BDE0FE', '#A2D2FF'] },
-  { name: 'Spring Blossoms', colors: ['#F7C1BB', '#FFAAA5', '#B8E1FF', '#A5DEE4', '#C4E7D4'] },
-  { name: 'Indian Spice', colors: ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'] },
-  { name: 'Japanese Wasabi', colors: ['#2F4B26', '#3E885B', '#85BDA6', '#BEDCFE', '#EFE9F4'] },
-  { name: 'Moroccan Market', colors: ['#D4A276', '#BC8A5F', '#A97155', '#8B5D33', '#6F4518'] },
   { name: 'Cyber Neon', colors: ['#FF10F0', '#00F0FF', '#00FFA3', '#FF00FF', '#7200FF'] },
-  { name: 'Holographic', colors: ['#FF00CC', '#33FFCC', '#00CCFF', '#6600FF', '#FF0066'] },
-  { name: 'Matrix', colors: ['#00FF41', '#0D2818', '#04471C', '#058C42', '#16DB65'] },
-  { name: 'Gold Leaf', colors: ['#D4AF37', '#FFD700', '#E6BE8A', '#B8860B', '#8B7500'] },
-  { name: 'Silver Moon', colors: ['#C0C0C0', '#D3D3D3', '#E0E0E0', '#F5F5F5', '#A9A9A9'] },
-  { name: 'Bronze Age', colors: ['#CD7F32', '#B87333', '#8C7853', '#A67C00', '#6C541E'] },
-  { name: 'Spring Awakening', colors: ['#C5EBC3', '#B7E3CC', '#A9D9D9', '#9BCFE0', '#8DC6D6'] },
-  { name: 'Summer Heat', colors: ['#FF6F61', '#FF8E72', '#FFAA80', '#FFC08D', '#FFD699'] },
-  { name: 'Autumn Forest', colors: ['#8C2308', '#A64600', '#BF6F00', '#D99700', '#F2C100'] },
-  { name: 'Winter Frost', colors: ['#CAE4DB', '#D4E6D0', '#E1E6D3', '#F0F0F0', '#A1C3D1'] },
   { name: 'Van Gogh Stars', colors: ['#3944BC', '#4A5FDB', '#5B79F8', '#6D93FF', '#7EADFF'] },
   { name: 'Monet Water', colors: ['#8ECAE6', '#219EBC', '#126782', '#073B4C', '#023047'] },
-  { name: 'Klimt Gold', colors: ['#D4AF37', '#C19E41', '#AE8D4B', '#9B7C55', '#886B5F'] },
   { name: 'Rainbow Spectrum', colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'] },
-  { name: 'Blackwork', colors: ['#000000', '#222222', '#444444', '#666666', '#888888', '#AAAAAA'] },
-
-  // --- NEW PALETTES ADDED ---
   { name: 'Forest Canopy', colors: ['#1A3C2F', '#2D6A4F', '#4CAF50', '#81C784', '#C8E6C9'] },
   { name: 'Desert Mirage', colors: ['#FF9A76', '#FF6B6B', '#FFD166', '#6D6875', '#B5838D'] },
-  { name: 'Ocean Depths 2', colors: ['#03045E', '#0077B6', '#00B4D8', '#90E0EF', '#CAF0F8'] },
   { name: 'Mountain Sunset', colors: ['#5E548E', '#9F86C0', '#E0B1CB', '#F9C74F', '#F9844A'] },
-  { name: 'Aurora Borealis', colors: ['#0466C8', '#0353A4', '#023E7D', '#5E60CE', '#7400B8'] },
   { name: 'Serenity', colors: ['#8ECAE6', '#219EBC', '#023047', '#FFB703', '#FB8500'] },
   { name: 'Passion Flame', colors: ['#FF0000', '#FF5400', '#FFBD00', '#FF0054', '#9E0059'] },
-  { name: 'Meditative State', colors: ['#606C38', '#283618', '#FEFAE0', '#DDA15E', '#BC6C25'] },
   { name: 'Joyful Harmony', colors: ['#FF6D00', '#FF7900', '#FF8500', '#FF9100', '#FF9E00'] },
   { name: 'Mystic Journey', colors: ['#5A189A', '#7B2CBF', '#9D4EDD', '#C77DFF', '#E0AAFF'] },
-  { name: 'Zen Garden', colors: ['#F8F9FA', '#E9ECEF', '#DEE2E6', '#CED4DA', '#ADB5BD'] },
-  { name: 'Hindu Festival', colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#1A535C', '#F7FFF7'] },
-  { name: 'Native Earth', colors: ['#BC6C25', '#DDA15E', '#606C38', '#283618', '#FEFAE0'] },
   { name: 'Celtic Knot', colors: ['#0B132B', '#1C2541', '#3A506B', '#5BC0BE', '#6FFFE9'] },
-  { name: 'Buddhist Peace', colors: ['#FAD2E1', '#C5DEDD', '#DBE7E4', '#F0EFEB', '#D6E2E9'] },
   { name: 'Quantum Field', colors: ['#000000', '#14213D', '#FCA311', '#E5E5E5', '#FFFFFF'] },
   { name: 'Galaxy Core', colors: ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C', '#D90429'] },
-  { name: 'BioLuminescence', colors: ['#0D1B2A', '#1B263B', '#415A77', '#778DA9', '#A3B18A'] },
-  { name: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
+  { name: g: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
   { name: 'Time Portal', colors: ['#000814', '#001D3D', '#003566', '#FFC300', '#FFD60A'] },
+
+  // --- 10 NEW PALETTES ADDED ---
+  { name: 'Synthwave Sunset', colors: ['#FF3E9D', '#FFB43E', '#2DDEED', '#725BFF', '#231942'] },
+  { name: 'Coral Reef', colors: ['#FF6F61', '#4FBDBA', '#F9C74F', '#F8AFA6', '#0077B6'] },
+  { name: 'Stained Glass', colors: ['#9D0208', '#0072B2', '#009E73', '#F0E442', '#CC79A7'] },
+  { name: 'Himalayan Salt', colors: ['#FFC0CB', '#FFA07A', '#FF7F50', '#FF6347', '#2A363B'] },
+  { name: 'Iridescent Beetle', colors: ['#5A189A', '#1A936F', '#2D6A4F', '#FFBA08', '#1F7A8C'] },
+  { name: 'Retro Diner', colors: ['#D90429', '#00A896', '#F0EFEB', '#FFD166', '#0466C8'] },
+  { name: 'Sakura Season', colors: ['#FFB7C5', '#FF7B9C', '#88B04B', '#556B2F', '#F8F4E3'] },
+  { name: 'Spiced Wine', colors: ['#800F2F', '#A4133C', '#C9184A', '#FF4D6D', '#FFB3C1'] },
+  { name: 'Oasis Sunrise', colors: ['#F25C54', '#F4845F', '#F7B267', '#84A59D', '#52796F'] },
+  { name: 'Paper & Ink', colors: ['#FAF9F6', '#2A2A2A', '#D4A373', '#E63946', '#457B9D'] },
+
+  // --- 10 NEW PALETTES TO ADD ---
+  { name: 'Ancient Scroll', colors: ['#F2E8CF', '#4A4A4A', '#B85C38', '#D4AF37', '#5E454B'] },
+  { name: 'Bioluminescent Algae', colors: ['#00F5D4', '#00C49A', '#2D7272', '#003D5B', '#9B5DE5'] },
+  { name: 'Mid-Century Modern', colors: ['#D95F26', '#849E6A', '#4A5D6A', '#E6C86E', '#A1663F'] },
+  { name: 'Galaxy Nebula', colors: ['#5A189A', '#9D4EDD', '#FF006E', '#00F5D4', '#FB5607'] },
+  { name: 'Geode Crystal', colors: ['#7B2CBF', '#C77DFF', '#E0AAFF', '#80FFDB', '#48BFE3'] },
+  { name: 'Tropical Hibiscus', colors: ['#F94144', '#F3722C', '#F8961E', '#F9C74F', '#43AA8B'] },
+  { name: 'Alchemy & Gold', colors: ['#231F20', '#5A189A', '#9D0208', '#FCA311', '#E0E0E0'] },
+  { name: 'Ice & Fire', colors: ['#5E60CE', '#7400B8', '#F9844A', '#F94144', '#F8F9FA'] },
+  { name: 'Steampunk Gears', colors: ['#B87333', '#8B4513', '#CD7F32', '#6A7B8D', '#3A506B'] },
+  { name: 'Solarpunk', colors: ['#43AA8B', '#90BE6D', '#F9C74F', '#F9844A', '#577590'] },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -213,31 +199,26 @@ document.addEventListener('DOMContentLoaded', () => {
           two.add(spike);
           break;*/
 
-          case 1: // Arched Gates (Stylized Version)
-            const archInnerR = layerRadius * 0.7;
+          case 1: // Arched Gates (Corrected)
+            // THE FIX: The inner radius is now calculated based on its own layer's
+            // boundaries, ensuring it is always contained.
+            const archInnerR = innerRadius + layerWidth * 0.3;
+
             const startAngle = angle - (Math.PI / symmetry) * 0.8;
             const endAngle = angle + (Math.PI / symmetry) * 0.8;
 
-            // Create the shape
             const arch = two.makeArcSegment(center.x, center.y, archInnerR, layerRadius, startAngle, endAngle);
 
-
-            // Apply Hybrid Render styling
             if (styleChoice < 0.5) { // Fill Only
               arch.fill = layerColor;
               arch.noStroke();
-            } else if (styleChoice < 0.85) { // Stroke Only
+            } else { // Stroke Only
               arch.noFill();
               arch.stroke = layerColor;
               arch.linewidth = 1.5;
-            } else { // Fill + Contrast Stroke
-              arch.fill = layerColor;
-              arch.stroke = contrastColor;
-              arch.linewidth = 2;
             }
             two.add(arch);
             break;
-
           /*
           case 1: // Arched Gates (Blueprint Version)
           const archInnerR = layerRadius * 0.7;
