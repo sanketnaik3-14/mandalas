@@ -34,7 +34,7 @@ const palettes = [
   { name: 'Celtic Knot', colors: ['#0B132B', '#1C2541', '#3A506B', '#5BC0BE', '#6FFFE9'] },
   { name: 'Quantum Field', colors: ['#000000', '#14213D', '#FCA311', '#E5E5E5', '#FFFFFF'] },
   { name: 'Galaxy Core', colors: ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C', '#D90429'] },
-  { name: g: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
+  { name: 'Neural Network', colors: ['#03071E', '#370617', '#6A040F', '#9D0208', '#FFBA08'] },
   { name: 'Time Portal', colors: ['#000814', '#001D3D', '#003566', '#FFC300', '#FFD60A'] },
 
   // --- 10 NEW PALETTES ADDED ---
@@ -150,19 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const angle = (j / symmetry) * (Math.PI * 2);
 
         switch (shapeType) {
-          case 0: // Fine Spikes (Stylized Version)
+          case 0: // Fine Spikes (Corrected)
             const angleStepSpike = (Math.PI * 2) / symmetry;
-            const spikeInnerR = layerRadius * 0.85;
+            // THE FIX: The inner radius is now calculated relative to its own layer.
+            const spikeInnerR = innerRadius + layerWidth * 0.15;
 
-            // Calculate the final absolute coordinates for the 3 points of the triangle
             const tip = new Two.Vector(center.x + layerRadius * Math.cos(angle), center.y + layerRadius * Math.sin(angle));
             const baseLeft = new Two.Vector(center.x + spikeInnerR * Math.cos(angle - angleStepSpike / 2), center.y + spikeInnerR * Math.sin(angle - angleStepSpike / 2));
             const baseRight = new Two.Vector(center.x + spikeInnerR * Math.cos(angle + angleStepSpike / 2), center.y + spikeInnerR * Math.sin(angle + angleStepSpike / 2));
 
-            // Create the shape from the points
             const spike = new Two.Path([tip, baseLeft, baseRight], true);
 
-            // Apply Hybrid Render styling
             if (styleChoice < 0.5) { // Fill Only
               spike.fill = layerColor;
               spike.noStroke();
@@ -175,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
               spike.stroke = contrastColor;
               spike.linewidth = 2;
             }
-
             two.add(spike);
             break;
 
@@ -631,15 +628,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           break;*/
 
-          case 12: // Teardrop Petals (Stylized Version)
+          case 12: // Teardrop Petals (Corrected)
             const teardropLength = layerWidth * 0.9;
             const teardropWidth = (Math.PI * 2 * innerRadius) / symmetry * 0.4;
 
-            // Create the shape by modifying an ellipse
             const teardrop = two.makeEllipse(0, 0, teardropLength / 2, teardropWidth / 2);
             teardrop.vertices[0].x -= teardropLength * 0.25; // Make one end pointy
 
-            // Apply Hybrid Render styling
             if (styleChoice < 0.5) { // Fill Only
               teardrop.fill = layerColor;
               teardrop.noStroke();
@@ -653,13 +648,13 @@ document.addEventListener('DOMContentLoaded', () => {
               teardrop.linewidth = 2;
             }
 
-            // Position the shape in the layer
+            // THE FIX: These positioning lines were missing.
             teardrop.rotation = angle;
             teardrop.translation.set(
               center.x + (innerRadius + teardropLength / 2) * Math.cos(angle),
               center.y + (innerRadius + teardropLength / 2) * Math.sin(angle)
             );
-            two.add(teardrop);
+            // No need for two.add() because makeEllipse does it automatically
             break;
 
           /*case 12: // Teardrop Petals (Blueprint Version)
